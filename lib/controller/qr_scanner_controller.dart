@@ -29,15 +29,15 @@ provider.setCameraFacing(facing == CameraFacing.front);
 }
 
 
-Future<void> pauseOrResume() async {
-if (provider.isScanning) {
-await mobileScannerController.stop();
-provider.setScanning(false);
-} else {
-await mobileScannerController.start();
-provider.setScanning(true);
-}
-}
+// Future<void> pauseOrResume() async {
+// if (provider.isScanning) {
+// await mobileScannerController.stop();
+// provider.setScanning(false);
+// } else {
+// await mobileScannerController.start();
+// provider.setScanning(true);
+// }
+// }
 
 
 void handleDetection(BarcodeCapture capture) {
@@ -48,7 +48,7 @@ if (raw != null && raw.isNotEmpty) {
 provider.setResult(raw);
 // Optional: pause after first detection to avoid repeated triggers
 mobileScannerController.stop();
-provider.setScanning(false);
+// provider.setScanning(false);
 }
 }
 

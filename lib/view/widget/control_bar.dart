@@ -41,14 +41,14 @@ class ControlsBar extends StatelessWidget {
             label: provider.usingFrontCamera ? 'Front' : 'Back',
             color: theme.colorScheme.primary,
           ),
-          _ControlButton(
-            onTap: controller.pauseOrResume,
-            icon: provider.isScanning ? Icons.pause : Icons.play_arrow,
-            label: provider.isScanning ? 'Pause' : 'Resume',
-            color: provider.isScanning
-                ? theme.colorScheme.error
-                : theme.colorScheme.primary,
-          ),
+          // _ControlButton(
+          //   onTap: controller.pauseOrResume,
+          //   icon: provider.isScanning ? Icons.pause : Icons.play_arrow,
+          //   label: provider.isScanning ? 'Pause' : 'Resume',
+          //   color: provider.isScanning
+          //       ? theme.colorScheme.error
+          //       : theme.colorScheme.primary,
+          // ),
         ],
       ),
     );

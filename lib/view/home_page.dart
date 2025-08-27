@@ -6,6 +6,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/controller/qr_scanner_controller.dart';
 import 'package:qr_code_scanner/view/widget/control_bar.dart';
+import 'package:qr_code_scanner/view/widget/scanner_overlay.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/qr_scanner_provider.dart';
@@ -67,19 +68,20 @@ class _QrScannerViewState extends State<QrScannerView> {
                       onDetect: _controller.handleDetection,
                     ),
                     // Simple overlay
-                    IgnorePointer(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withOpacity(0.6),
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
+                    // IgnorePointer(
+                    //   child: Container(
+                    //     decoration: BoxDecoration(
+                    //       border: Border.all(
+                    //         color: Theme.of(
+                    //           context,
+                    //         ).colorScheme.primary.withOpacity(0.6),
+                    //         width: 2,
+                    //       ),
+                    //       borderRadius: BorderRadius.circular(16),
+                    //     ),
+                    //   ),
+                    // ),
+                    ScannerOverlay(overlaySize: 250,)
                   ],
                 ),
               ),
