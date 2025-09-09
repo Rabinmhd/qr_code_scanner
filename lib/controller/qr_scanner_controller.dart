@@ -22,11 +22,11 @@ final torchState=provider.torchOn;
   }
 
 
-Future<void> switchCamera() async {
-await mobileScannerController.switchCamera();
-final facing =  mobileScannerController.facing;
-provider.setCameraFacing(facing == CameraFacing.front);
-}
+// Future<void> switchCamera() async {
+// await mobileScannerController.switchCamera();
+// final facing =  mobileScannerController.facing;
+// provider.setCameraFacing(facing == CameraFacing.front);
+// }
 
 
 // Future<void> pauseOrResume() async {

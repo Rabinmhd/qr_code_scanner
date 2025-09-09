@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/controller/qr_scanner_controller.dart';
 import 'package:qr_code_scanner/providers/qr_scanner_provider.dart';
+import 'package:qr_code_scanner/view/barcode_page.dart';
 
 class ControlsBar extends StatelessWidget {
   final QrScannerController controller;
@@ -36,9 +37,11 @@ class ControlsBar extends StatelessWidget {
             color: provider.torchOn ? Colors.amber : theme.colorScheme.primary,
           ),
           _ControlButton(
-            onTap: controller.switchCamera,
-            icon: Icons.cameraswitch,
-            label: provider.usingFrontCamera ? 'Front' : 'Back',
+            onTap:() {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => QrGeneratorPage(),));
+            },
+            icon: Icons.barcode_reader,
+            label: "barcode generate",
             color: theme.colorScheme.primary,
           ),
           // _ControlButton(
