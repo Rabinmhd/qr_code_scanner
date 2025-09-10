@@ -29,6 +29,8 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
   Color _backgroundColor = Colors.white;
   Color _qrColor = Colors.black;
   Color _frameColor = Colors.blue;
+  Color _titleColor = Colors.black;
+  Color _subtitleColor = Colors.black;
   String _selectedTemplate = 'professional';
   bool _showLogo = true;
   bool _showBorder = true;
@@ -36,64 +38,178 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
 
   final ImagePicker _picker = ImagePicker();
 
-Future<void> _pickImage() async {
-  showDialog(
+  // *** NEW: Color picker function ***
+  // *** FIXED: Color picker function ***
+Future<void> _showColorPicker(String colorType, Color currentColor) async {
+  Color? selectedColor;
+  
+  selectedColor = await showDialog<Color>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text("Select Image Source"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text("Camera"),
-              onTap: () {
-                Navigator.pop(context);
-                _getImageFromSource(ImageSource.camera);
-              },
+        title: Text('Choose $colorType Color'),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 300, // *** FIX: Added fixed height ***
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // *** FIX: Wrapped GridView with Container and fixed sizing ***
+                SizedBox(
+                  height: 240,
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 1.0, // *** FIX: Added aspect ratio ***
+                    ),
+                    itemCount: 20,
+                    itemBuilder: (context, index) {
+                      final List<Color> colors = [
+                        Colors.black,
+                        Colors.white,
+                        Colors.red,
+                        Colors.pink,
+                        Colors.purple,
+                        Colors.deepPurple,
+                        Colors.indigo,
+                        Colors.blue,
+                        Colors.lightBlue,
+                        Colors.cyan,
+                        Colors.teal,
+                        Colors.green,
+                        Colors.lightGreen,
+                        Colors.lime,
+                        Colors.yellow,
+                        Colors.amber,
+                        Colors.orange,
+                        Colors.deepOrange,
+                        Colors.brown,
+                        Colors.grey,
+                      ];
+                      
+                      final color = colors[index];
+                      
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context, color); // *** FIX: Return the color ***
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: color,
+                            border: Border.all(
+                              color: currentColor == color ? Colors.red : Colors.grey,
+                              width: currentColor == color ? 3 : 1,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: color == Colors.white
+                              ? Icon(Icons.circle, color: Colors.grey[300]) // *** FIX: Visual indicator for white ***
+                              : null,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text("Gallery"),
-              onTap: () {
-                Navigator.pop(context);
-                _getImageFromSource(ImageSource.gallery);
-              },
-            ),
-          ],
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: const Text('Cancel'),
           ),
         ],
       );
     },
   );
-}
 
-Future<void> _getImageFromSource(ImageSource source) async {
-  try {
-    final XFile? image = await _picker.pickImage(
-      source: source,
-      maxWidth: 500,
-      maxHeight: 500,
-      imageQuality: 80,
-    );
-    if (image != null) {
-      setState(() {
-        _selectedImage = File(image.path);
-      });
-    }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Failed to pick image: $e")),
-    );
+  // *** FIX: Update state only if a color was selected ***
+  if (selectedColor != null) {
+    setState(() {
+      switch (colorType) {
+        case 'QR':
+          _qrColor = selectedColor!;
+          break;
+        case 'Background':
+          _backgroundColor = selectedColor!;
+          break;
+        case 'Frame':
+          _frameColor = selectedColor!;
+          break;
+          case 'title':
+          _frameColor = selectedColor!;
+          break;
+          case 'subtitle':
+          _frameColor = selectedColor!;
+          break;
+      }
+    });
   }
 }
 
+
+  Future<void> _pickImage() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Select Image Source"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text("Camera"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _getImageFromSource(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text("Gallery"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _getImageFromSource(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _getImageFromSource(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        maxWidth: 500,
+        maxHeight: 500,
+        imageQuality: 80,
+      );
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to pick image: $e")),
+      );
+    }
+  }
 
   Future<void> _saveQr() async {
     try {
@@ -366,6 +482,131 @@ Future<void> _getImageFromSource(ImageSource source) async {
                     
                     const SizedBox(height: 16),
                     
+                    // *** NEW: Color Customization Section ***
+                    const Text("Colors:", style: TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 12),
+                    
+                    // QR Color Picker
+                    Row(
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: _qrColor,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text("QR Code Color", style: TextStyle(fontSize: 16)),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _showColorPicker('QR', _qrColor),
+                          child: const Text('Change'),
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 12),
+                    
+                    // Background Color Picker
+                    Row(
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: _backgroundColor,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text("Background Color", style: TextStyle(fontSize: 16)),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _showColorPicker('Background', _backgroundColor),
+                          child: const Text('Change'),
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 12),
+                    
+                    // Frame Color Picker
+                    Row(
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: _frameColor,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text("Frame Color", style: TextStyle(fontSize: 16)),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _showColorPicker('Frame', _frameColor),
+                          child: const Text('Change'),
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 16),
+                     Row(
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: _frameColor,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text("title Color", style: TextStyle(fontSize: 16)),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _showColorPicker('title', _frameColor),
+                          child: const Text('Change'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                     Row(
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: _frameColor,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text("Subtitle Color", style: TextStyle(fontSize: 16)),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _showColorPicker('subtitle', _frameColor),
+                          child: const Text('Change'),
+                        ),
+                      ],
+                    ),
+                    // *** END: Color Customization Section ***
+                    const SizedBox(height: 16),
+                    
                     // Image Selection
                     Row(
                       children: [
@@ -443,7 +684,7 @@ Future<void> _getImageFromSource(ImageSource source) async {
                   icon: const Icon(Icons.download),
                   label: const Text("Download QR Code"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _frameColor,
+                    backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
