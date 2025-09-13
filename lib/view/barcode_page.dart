@@ -142,10 +142,10 @@ Future<void> _showColorPicker(String colorType, Color currentColor) async {
           _frameColor = selectedColor!;
           break;
           case 'title':
-          _frameColor = selectedColor!;
+          _titleColor = selectedColor!;
           break;
           case 'subtitle':
-          _frameColor = selectedColor!;
+          _subtitleColor = selectedColor!;
           break;
       }
     });
@@ -566,7 +566,7 @@ Future<void> _showColorPicker(String colorType, Color currentColor) async {
                           width: 30,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: _frameColor,
+                            color: _titleColor,
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(color: Colors.grey),
                           ),
@@ -576,7 +576,7 @@ Future<void> _showColorPicker(String colorType, Color currentColor) async {
                           child: Text("title Color", style: TextStyle(fontSize: 16)),
                         ),
                         ElevatedButton(
-                          onPressed: () => _showColorPicker('title', _frameColor),
+                          onPressed: () => _showColorPicker('title', _titleColor),
                           child: const Text('Change'),
                         ),
                       ],
@@ -589,7 +589,7 @@ Future<void> _showColorPicker(String colorType, Color currentColor) async {
                           width: 30,
                           height: 30,
                           decoration: BoxDecoration(
-                            color: _frameColor,
+                            color: _subtitleColor,
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(color: Colors.grey),
                           ),
@@ -599,7 +599,7 @@ Future<void> _showColorPicker(String colorType, Color currentColor) async {
                           child: Text("Subtitle Color", style: TextStyle(fontSize: 16)),
                         ),
                         ElevatedButton(
-                          onPressed: () => _showColorPicker('subtitle', _frameColor),
+                          onPressed: () => _showColorPicker('subtitle', _subtitleColor),
                           child: const Text('Change'),
                         ),
                       ],
